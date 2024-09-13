@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int     @id @default(autoincrement())
+  user_name     String  @unique
+  first_name    String
+  middle_name   String?
+  last_name     String
+  email         String  @unique
+  password      String?
+  conf_password String?
+  tenant_id String?
+  job_id Int
+  user_type_id Int
+  order Int?
+  jobTitle JobTitle @relation(fields: [job_id], references: [id])
+  userType UserType @relation(fields: [user_type_id], references: [id]) 
+}
+model Department {
+  id        Int        @id @default(autoincrement())
+  dept_name String
+  employees Employee[]
+}
+
+model Employee {
+  id           Int        @id @default(autoincrement())
+  emp_name     String?
+  email        String     @unique
+  first_name   String
+  last_name    String
+  job_title    String
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+}
+
+model JobTitle {
+  id     Int    @unique
+  title  String
+  users User[]
+}
+
+model UserType {
+  id     Int    @id @unique @default(autoincrement())
+  type   String
+  users User[]
+}
+
+model Messages {
+  id String @id
+  sender String?
+  receivers String?
+  subject String?
+  body String?
+  date String?
+  status String?
+}

@@ -1,0 +1,54 @@
+GET http://localhost:3000/api/users
+
+###
+GET http://localhost:3000/api/employees
+
+###
+POST http://localhost:3000/api/users
+
+Content-Type: application/json
+
+{
+    "user_name":"kaml",
+    "password":"1122",
+}
+###
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "user_name": "Kaml",
+    "password": "1122"
+}
+
+###
+GET  http://localhost:3000/api/profile
+
+###
+GET  http://localhost:3000/api/messages
+
+###
+POST http://localhost:3000/api/employees
+Content-Type: application/json
+
+{
+    "email": "cv@gmail.com",
+    "first_name": "John",
+    "last_name": "John",
+    "job_title": "John",
+    "dept": "John"
+}
+
+###
+DELETE  http://localhost:3000/api/users/2
+
+###
+DELETE  http://localhost:3000/api/employees/6
+
+###
+PATCH http://localhost:3000/api/users/6
+Content-Type: application/json
+
+{
+    "firstname": "John",
+}
