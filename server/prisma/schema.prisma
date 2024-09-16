@@ -3,61 +3,63 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            Int     @id @default(autoincrement())
-  user_name     String  @unique
-  first_name    String
-  middle_name   String?
-  last_name     String
-  email         String  @unique
-  password      String?
-  conf_password String?
-  tenant_id String?
-  job_id Int
-  user_type_id Int
-  order Int?
-  jobTitle JobTitle @relation(fields: [job_id], references: [id])
-  userType UserType @relation(fields: [user_type_id], references: [id]) 
-}
-model Department {
-  id        Int        @id @default(autoincrement())
+model department {
+  id        Int        @id(map: "Department_pkey") @default(autoincrement())
   dept_name String
-  employees Employee[]
+  employee  employee[]
 }
 
-model Employee {
-  id           Int        @id @default(autoincrement())
+model employee {
+  id           Int        @id(map: "Employee_pkey") @default(autoincrement())
   emp_name     String?
-  email        String     @unique
+  email        String     @unique(map: "Employee_email_key")
   first_name   String
   last_name    String
   job_title    String
   departmentId Int
-  department   Department @relation(fields: [departmentId], references: [id])
+  department   department @relation(fields: [departmentId], references: [id], map: "Employee_departmentId_fkey")
 }
 
-model JobTitle {
-  id     Int    @unique
-  title  String
-  users User[]
+model job_title {
+  id    Int    @unique(map: "JobTitle_id_key")
+  title String
+  user  user[]
 }
 
-model UserType {
-  id     Int    @id @unique @default(autoincrement())
-  type   String
-  users User[]
+model messages {
+  id        String    @id(map: "Messages_pkey")
+  sender    String?
+  receivers Json?
+  subject   String?
+  body      String?
+  date      String?
+  status    String?
+  new_date  DateTime? @db.Timestamptz(6)
 }
 
-model Messages {
-  id String @id
-  sender String?
-  receivers String?
-  subject String?
-  body String?
-  date String?
-  status String?
+model user {
+  id            Int       @id @default(autoincrement())
+  user_name     String    @unique(map: "User_user_name_key")
+  first_name    String
+  middle_name   String?
+  last_name     String
+  email         String    @unique(map: "User_email_key")
+  password      String?
+  conf_password String?
+  tenant_id     String?
+  job_id        Int
+  user_type_id  Int
+  order         Int?
+  job_title     job_title @relation(fields: [job_id], references: [id])
+  user_type     user_type @relation(fields: [user_type_id], references: [id])
+}
+
+model user_type {
+  id   Int    @id @unique(map: "UserType_id_key") @default(autoincrement())
+  type String
+  user user[]
 }

@@ -88,18 +88,18 @@ router.get("/messages/draft/:user", async (req, res) => {
 });
 router.post("/messages", async (req, res) => {
   const {to, id, sender, date, status, subject, body} = req.body;
-  const receivers = JSON.stringify(to);
 
   try {
     const message = await prisma.messages.create({
       data: {
         id,
         sender,
-        receivers,
+        receivers: to,
         subject,
         body,
         date,
         status,
+        new_date: new Date().getTime(),
       },
     });
     if (status === "sent") {

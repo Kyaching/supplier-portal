@@ -52,6 +52,7 @@ router.post("/login", async (req, res) => {
     // Handle unexpected errors
 
     res.status(500).send("Error logging in");
+    console.log(error);
   }
 });
 
@@ -83,8 +84,11 @@ router.get("/users", async (req, res, next) => {
   try {
     const users = await prisma.user.findMany({
       include: {
-        jobTitle: true,
-        userType: true,
+        job_title: true,
+        user_type: true,
+      },
+      orderBy: {
+        id: "asc",
       },
     });
     res.json(users);
@@ -112,12 +116,12 @@ router.post("/users", async (req, res, next) => {
             order,
           } = user;
 
-          let jobId = await prisma.jobTitle.findUnique({
+          let jobId = await prisma.job_title.findUnique({
             where: {
               id: Number(job_id),
             },
           });
-          let userTypeId = await prisma.userType.findUnique({
+          let userTypeId = await prisma.user_type.findUnique({
             where: {
               id: Number(user_type_id),
             },
@@ -176,7 +180,7 @@ router.post("/users", async (req, res, next) => {
         order,
       } = input;
       if (job_id && job_title) {
-        await prisma.jobTitle.upsert({
+        await prisma.job_title.upsert({
           where: {id: job_id},
           update: {title: job_title},
           create: {id: job_id, title: job_title},
@@ -185,7 +189,7 @@ router.post("/users", async (req, res, next) => {
 
       // Handle userType upsert if provided
       if (user_type_id && user_type) {
-        await prisma.userType.upsert({
+        await prisma.user_type.upsert({
           where: {id: user_type_id},
           update: {type: user_type},
           create: {id: user_type_id, type: user_type},
@@ -206,8 +210,8 @@ router.post("/users", async (req, res, next) => {
             conf_password,
             tenant_id,
             order,
-            jobTitle: job_id ? {connect: {id: job_id}} : undefined,
-            userType: user_type_id ? {connect: {id: user_type_id}} : undefined,
+            job_title: job_id ? {connect: {id: job_id}} : undefined,
+            user_type: user_type_id ? {connect: {id: user_type_id}} : undefined,
           },
         });
       } else {
@@ -222,8 +226,8 @@ router.post("/users", async (req, res, next) => {
             conf_password,
             tenant_id,
             order,
-            jobTitle: job_id ? {connect: {id: job_id}} : undefined,
-            userType: user_type_id ? {connect: {id: user_type_id}} : undefined,
+            job_title: job_id ? {connect: {id: job_id}} : undefined,
+            user_type: user_type_id ? {connect: {id: user_type_id}} : undefined,
           },
         });
       }
@@ -251,12 +255,12 @@ router.put("/users", async (req, res, next) => {
         tenant_id,
       } = user;
 
-      let jobId = await prisma.jobTitle.findUnique({
+      let jobId = await prisma.job_title.findUnique({
         where: {
           id: Number(job_id),
         },
       });
-      let userTypeId = await prisma.userType.findUnique({
+      let userTypeId = await prisma.user_type.findUnique({
         where: {
           id: Number(user_type_id),
         },
@@ -288,13 +292,31 @@ router.put("/users", async (req, res, next) => {
 });
 
 router.patch("/users/:id", async (req, res, next) => {
+  const {first_name, last_name, job_title, job_id} = req.body;
+
   try {
     const {id} = req.params;
+    if (job_title) {
+      await prisma.job_title.update({
+        where: {
+          id: job_id,
+        },
+        data: {
+          title: job_title,
+        },
+      });
+    }
     const updateUser = await prisma.user.update({
       where: {
         id: Number(id),
       },
-      data: req.body,
+      data: {
+        first_name,
+        last_name,
+      },
+      include: {
+        job_title: true,
+      },
     });
     res.json(updateUser);
   } catch (error) {
@@ -418,7 +440,11 @@ router.delete("/employees/:id", async (req, res, next) => {
  */
 router.get("/departments", async (req, res, next) => {
   try {
-    const departments = await prisma.department.findMany();
+    const departments = await prisma.department.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
     res.json(departments);
   } catch (err) {
     console.log(err);
@@ -475,7 +501,7 @@ router.delete("/departments/:id", async (req, res, next) => {
 
 router.get("/jobTitle", async (req, res, next) => {
   try {
-    const titles = await prisma.jobTitle.findMany();
+    const titles = await prisma.job_title.findMany();
     res.json(titles);
   } catch (err) {
     console.log(err);
@@ -484,7 +510,7 @@ router.get("/jobTitle", async (req, res, next) => {
 
 router.get("/userTypes", async (req, res, next) => {
   try {
-    const types = await prisma.userType.findMany();
+    const types = await prisma.user_type.findMany();
     res.json(types);
   } catch (err) {
     console.log(err);
