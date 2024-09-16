@@ -12,9 +12,9 @@ import AddEmployees from "./components/AddEmployees.jsx";
 import AllEmployees from "./components/AllEmployees";
 import AddDepartment from "./components/AddDepartment";
 import AllDepartment from "./components/AllDepartment";
-import MasterDetailsOne from "./components/MasterDetailsOne";
+
 import MasterDetailsTwo from "./components/MasterDetailsTwo";
-import MasterDetailsThree from "./components/MasterDetailsThree";
+
 import Profile from "./components/Profile";
 import Login from "./components/auth/Login";
 import DNDContainer from "./components/DND/DNDContainer";
@@ -86,19 +86,13 @@ const router = createBrowserRouter([
         path: "/allDepartment",
         element: <AllDepartment></AllDepartment>,
       },
+
       {
-        path: "/master_details_1",
-        element: <MasterDetailsOne></MasterDetailsOne>,
-      },
-      {
-        path: "/master_details_2",
+        path: "/master_details",
         element: <MasterDetailsTwo></MasterDetailsTwo>,
         loader: loadDepartments,
       },
-      {
-        path: "/master_details_3",
-        element: <MasterDetailsThree></MasterDetailsThree>,
-      },
+
       {
         path: "/users",
         element: <DNDContainer />,

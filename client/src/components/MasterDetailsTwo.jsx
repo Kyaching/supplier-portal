@@ -46,14 +46,15 @@ const MasterDetailsTwo = () => {
   const [addDept, setAddDept] = useState(false);
   const [addEmployee, setAddEmployee] = useState(false);
   const [checked, setChecked] = useState(null);
-  const {data, fetchData, setData} = useGet("/departments");
+  const {data, refetch, setData} = useGet("/departments");
+  const [departments, setDepartments] = useState([]);
   const [filterEmployeesData, setFilterEmployeesData] = useState(null);
   const {update} = useUpdate();
   const {deleteEmp} = useDelete();
   const [editRow, setEditRow] = useState(null);
   const formRef = useRef(null);
   const loadDepartments = useLoaderData();
-  console.log(data);
+  console.log(departments);
   const form = useForm({
     defaultValues: {
       id: "",
@@ -61,7 +62,11 @@ const MasterDetailsTwo = () => {
     },
   });
 
-  useEffect(() => {}, [fetchData, addDept, addEmployee]);
+  useEffect(() => {
+    if (data) {
+      setDepartments(data);
+    }
+  }, [refetch, addDept, addEmployee, data]);
 
   useEffect(() => {
     const handleClickOutside = event => {
@@ -85,10 +90,11 @@ const MasterDetailsTwo = () => {
       await update(`/departments/${editRow}`, {id: parseId, dept_name});
 
       // Update local state with new department data
-      const updatedData = data.map(dept =>
+      const updatedData = departments.map(dept =>
         dept.id === editRow ? {...dept, id: parseId, dept_name} : dept
       );
-      setData(updatedData);
+
+      setDepartments(updatedData);
 
       setEditRow(null);
       toast.success("Updated Successfully");
@@ -109,7 +115,7 @@ const MasterDetailsTwo = () => {
       const response = await fetch(url);
       const employees = await response.json();
       setFilterEmployeesData(employees);
-      console.log(employees); // Log the employees fetched, not the state
+      // console.log(employees); // Log the employees fetched, not the state
     } catch (error) {
       console.error("Error fetching filtered employees:", error);
     }
@@ -138,6 +144,14 @@ const MasterDetailsTwo = () => {
     const updateData = data.filter(data => data.id !== id);
     setData(updateData);
     toast.error("Deleted Successfully");
+  };
+
+  const refreshDepartments = async () => {
+    try {
+      await refetch();
+    } catch (error) {
+      console.error("Failed to fetch departments:", error);
+    }
   };
 
   return (
@@ -171,10 +185,11 @@ const MasterDetailsTwo = () => {
                       <DepartmentForm
                         addDept={addDept}
                         setAddDept={setAddDept}
+                        onAddDepartments={refreshDepartments}
                       />
                     )}
 
-                    {data?.map((dept, index) => (
+                    {departments?.map((dept, index) => (
                       <TableRow key={dept.id}>
                         <TableCell>
                           <Checkbox
@@ -184,20 +199,6 @@ const MasterDetailsTwo = () => {
                               handleCheckboxChange(checked, dept.id)
                             }
                           ></Checkbox>
-                          {/* <FormField
-                            control={form.control}
-                            name="checked"
-                            render={({field}) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          /> */}
                         </TableCell>
                         <TableCell>
                           {editRow === dept.id ? (
@@ -281,13 +282,7 @@ const MasterDetailsTwo = () => {
                                 </Tooltip>
                               </TooltipProvider>
                             )}
-                            {/* <button
-                              type="button"
-                              onClick={() => handleDelete(dept.id)}
-                              className="hover:bg-red-400 p-1 rounded-md transform hover:scale-125 transition-all ease-in duration-300"
-                            >
-                              <FiX className="text-base"></FiX>
-                            </button> */}
+
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <button className="hover:bg-red-400 p-1 rounded-md transform hover:scale-125 transition-all ease-in duration-300">

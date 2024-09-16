@@ -59,7 +59,7 @@ const MailTable = ({title, headers, data, onAction}) => {
                     unreadNotifications.has(id) ? "font-bold" : "font-normal"
                   }
                 >
-                  {title == "Inbox" ? sender : JSON.parse(receivers).join("; ")}
+                  {title == "Inbox" ? sender : receivers}
                 </TableCell>
                 <TableCell
                   className={

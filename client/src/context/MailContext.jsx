@@ -14,7 +14,7 @@ export const MailProvider = ({children}) => {
 
   const {deleteEmp, data: status} = useDelete();
   const {post} = usePost();
-  const {sentMessages, draftMessages, inboxMessages, refetchAll} =
+  const {sentMessages, draftMessages, inboxMessages, refetchAll, refetchSent} =
     useConsolidatedMessages(user);
   const [drafts, setDrafts] = useState([]);
   const [sentMails, setSentMails] = useState([]);
@@ -67,6 +67,7 @@ export const MailProvider = ({children}) => {
           toast.success("Message Saved as Draft");
           refetchAll();
         } else if (status === "sent") {
+          refetchSent();
           toast.success("Message Sent Successfully");
         }
         // refetchAll(); // Refresh all messages

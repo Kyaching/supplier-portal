@@ -24,7 +24,6 @@ const DNDContainer = () => {
     }
   }, [data]);
 
-  console.log(userData);
   const handleFormChange = updatedUsers => {
     setUserData(updatedUsers);
   };
@@ -137,10 +136,6 @@ const DNDContainer = () => {
   };
   console.log(userData);
   const isSaveButtonDisabled = !isEditing;
-  const isComplete = isNewUserComplete();
-  console.log(
-    `Disabled ${isSaveButtonDisabled}, Is Complete: ${isComplete} IS Edit: ${isEditing}`
-  );
 
   const handleMaximize = id => {
     setMaximizeState(prev => {

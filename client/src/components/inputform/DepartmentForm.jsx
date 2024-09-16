@@ -13,7 +13,7 @@ import {useState} from "react";
 import {usePost} from "../hooks/useAPICall";
 import toast, {Toaster} from "react-hot-toast";
 
-const DepartmentForm = ({addDept, setAddDept}) => {
+const DepartmentForm = ({addDept, setAddDept, onAddDepartments}) => {
   const {post} = usePost();
   const [data, setData] = useState({
     id: "",
@@ -28,13 +28,19 @@ const DepartmentForm = ({addDept, setAddDept}) => {
     }));
   };
 
-  const handleAddDepartment = () => {
+  const handleAddDepartment = async () => {
     const {id, dept_name} = data;
     const parseId = parseInt(id);
     const newData = {id: parseId, dept_name};
-    post("/departments", newData);
-    toast.success("Added Successfully");
-    setAddDept(!addDept);
+
+    try {
+      await post("/departments", newData);
+      toast.success("Added Successfully");
+      onAddDepartments(); // Call the function passed as prop
+      setAddDept(!addDept);
+    } catch (error) {
+      toast.error("Failed to add department");
+    }
   };
 
   const handleRemove = () => {
@@ -96,6 +102,7 @@ const DepartmentForm = ({addDept, setAddDept}) => {
 DepartmentForm.propTypes = {
   addDept: PropTypes.bool.isRequired,
   setAddDept: PropTypes.func.isRequired,
+  onAddDepartments: PropTypes.func.isRequired,
 };
 
 export default DepartmentForm;

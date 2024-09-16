@@ -56,7 +56,6 @@ const SideMenuBar = () => {
               <Link to="/allUser">
                 <MenuItem icon={<FiUsers />}> All Users</MenuItem>
               </Link>
-              <MenuItem icon={<IoPaperPlaneOutline />}> Bar charts</MenuItem>
             </SubMenu>
             <SubMenu icon={<FaRegListAlt />} label="Departments">
               <Link to="/addDepartment">
@@ -64,15 +63,6 @@ const SideMenuBar = () => {
               </Link>
               <Link to="/allDepartment">
                 <MenuItem icon={<FaRegFileAlt />}> All Department</MenuItem>
-              </Link>
-              <Link to="/master_details_1">
-                <MenuItem icon={<FaRegFileAlt />}> Master Details 1</MenuItem>
-              </Link>
-              <Link to="/master_details_2">
-                <MenuItem icon={<FaRegFileAlt />}> Master Details 2</MenuItem>
-              </Link>
-              <Link to="/master_details_3">
-                <MenuItem icon={<FaRegFileAlt />}> Master Details 3</MenuItem>
               </Link>
             </SubMenu>
             <SubMenu icon={<FaUser />} label="Employees">
@@ -88,7 +78,9 @@ const SideMenuBar = () => {
                 <MenuItem icon={<FiFeather />}> Users</MenuItem>
               </Link>
             </SubMenu>
-            <MenuItem icon={<MdOutlineWidgets />}>Widget</MenuItem>
+            <Link to="/master_details">
+              <MenuItem icon={<FaRegFileAlt />}> Master Details</MenuItem>
+            </Link>
             <Link to="/profile">
               <MenuItem prefix={user} icon={<FaRegUser />}></MenuItem>
             </Link>

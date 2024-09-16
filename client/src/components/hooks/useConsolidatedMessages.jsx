@@ -26,7 +26,7 @@ const useConsolidatedMessages = user => {
     await Promise.all([refetchSent(), refetchDraft(), refetchInbox()]);
   };
 
-  return {sentMessages, draftMessages, inboxMessages, refetchAll};
+  return {sentMessages, draftMessages, inboxMessages, refetchAll, refetchSent};
 };
 
 export default useConsolidatedMessages;

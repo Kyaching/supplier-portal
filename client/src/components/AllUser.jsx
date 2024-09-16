@@ -17,6 +17,7 @@ import {useForm} from "react-hook-form";
 import {FiEdit, FiSave, FiX} from "react-icons/fi";
 import {useEffect, useRef, useState} from "react";
 import toast, {Toaster} from "react-hot-toast";
+import {useGet} from "./hooks/useAPICall";
 
 const AllUser = () => {
   const [users, setUsers] = useState([]);
@@ -27,7 +28,10 @@ const AllUser = () => {
   useEffect(() => {
     fetch("http://localhost:3000/api/users")
       .then(res => res.json())
-      .then(data => setUsers(data))
+      .then(data => {
+        setUsers(data);
+        console.log(data);
+      })
       .catch(err => console.log(err));
   }, []);
 
@@ -47,17 +51,17 @@ const AllUser = () => {
   const handleEditUser = (id, index) => {
     setEditRow(id);
     setValue("rowIndex", index);
-    setValue("firstname", users[index].firstname);
-    setValue("lastname", users[index].lastname);
-    setValue("job_title", users[index].job_title);
+    setValue("first_name", users[index].first_name);
+    setValue("last_name", users[index].last_name);
+    setValue("job_title", users[index]?.job_title?.title);
   };
 
   const onSubmit = data => {
-    const {rowIndex, firstname, lastname, job_title} = data;
+    const {rowIndex, first_name, last_name, job_title} = data;
     const updatedUser = {
       ...users[rowIndex],
-      firstname,
-      lastname,
+      first_name,
+      last_name,
       job_title,
     };
     fetch("http://localhost:3000/api/users/" + editRow, {
@@ -76,6 +80,7 @@ const AllUser = () => {
           return row;
         });
         setUsers(newData);
+        console.log(newData);
         toast.success("Updated Successfully");
         setEditRow(null);
       })
@@ -121,19 +126,19 @@ const AllUser = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user, index) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.id}</TableCell>
+            {users?.map((user, index) => (
+              <TableRow key={user?.id}>
+                <TableCell>{user?.id}</TableCell>
                 <TableCell>
-                  {editRow === user.id ? (
+                  {editRow === user?.id ? (
                     <input
                       className="p-2"
                       type="text"
-                      {...register("firstname")}
-                      defaultValue={user.firstname}
+                      {...register("first_name")}
+                      defaultValue={user.first_name}
                     />
                   ) : (
-                    user.firstname
+                    user.first_name
                   )}
                 </TableCell>
                 <TableCell>
@@ -141,11 +146,11 @@ const AllUser = () => {
                     <input
                       className="p-2"
                       type="text"
-                      {...register("lastname")}
-                      defaultValue={user.lastname}
+                      {...register("last_name")}
+                      defaultValue={user.last_name}
                     />
                   ) : (
-                    user.lastname
+                    user.last_name
                   )}
                 </TableCell>
                 <TableCell>
@@ -154,10 +159,10 @@ const AllUser = () => {
                       className="p-2"
                       type="text"
                       {...register("job_title")}
-                      defaultValue={user.job_title}
+                      defaultValue={user.job_title.title}
                     />
                   ) : (
-                    user.job_title
+                    user.job_title.title
                   )}
                 </TableCell>
                 <TableCell>

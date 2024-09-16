@@ -45,8 +45,8 @@ const UserItems = ({
   setIsEditing,
   setOriginalData,
 }) => {
-  const [jobTitles, setJobTitles] = useState(null);
-  const [userTypes, setUserTypes] = useState(null);
+  const [jobTitles, setJobTitles] = useState([]);
+  const [userTypes, setUserTypes] = useState([]);
   const {deleteEmp: deleteUser} = useDelete();
   const form = useForm({
     defaultValues: {
@@ -54,8 +54,8 @@ const UserItems = ({
       last_name: user?.last_name || "",
       email: user?.email || "",
       user_name: user?.user_name || "",
-      job_id: user?.jobTitle?.id,
-      user_type_id: user?.userType?.id || "",
+      job_id: user?.job_title?.id,
+      user_type_id: user?.user_type?.id || "",
       tenant_id: "1",
     },
   });
@@ -73,7 +73,9 @@ const UserItems = ({
     const userType = async () => {
       const response = await fetch("http://localhost:3000/api/userTypes");
       const result = await response.json();
-      setUserTypes(result);
+      if (result) {
+        setUserTypes(result);
+      }
     };
     userType();
   }, []);
